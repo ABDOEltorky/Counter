@@ -19,7 +19,7 @@
       font-size: 24px;
     }
     .container {
-      max-width: 700px;
+      max-width: 800px;
       margin: 30px auto;
       background-color: white;
       border-radius: 8px;
@@ -42,14 +42,14 @@
     }
     .options {
       display: flex;
-      gap: 20px;
+      gap: 10px;
       align-items: center;
-      margin-bottom: 5px;
+      flex-wrap: wrap;
     }
     .counter {
       font-size: 14px;
       color: #555;
-      margin-right: 5px;
+      margin: 0 10px;
     }
     .summary {
       font-size: 14px;
@@ -60,13 +60,39 @@
       background-color: #0062cc;
       color: white;
       border: none;
-      padding: 8px 15px;
+      padding: 8px 12px;
       border-radius: 5px;
       cursor: pointer;
       font-size: 14px;
     }
     .clickable-option:hover {
       background-color: #004a99;
+    }
+    .decrement-button {
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      padding: 4px 10px;
+      border-radius: 50%;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .decrement-button:hover {
+      background-color: #cc0000;
+    }
+    .save-button {
+      display: block;
+      margin: 30px auto 10px auto;
+      background-color: #28a745;
+      color: white;
+      padding: 12px 24px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .save-button:hover {
+      background-color: #1e7e34;
     }
   </style>
 </head>
@@ -78,6 +104,7 @@
   <div class="container">
     <h2>فضلاً أجب عن الأسئلة التالية:</h2>
     <div id="questions"></div>
+    <button class="save-button" onclick="saveResponses()">💾 حفظ الإجابات</button>
   </div>
 
   <script>
@@ -107,8 +134,11 @@
         <div class="options">
           <button class="clickable-option" onclick="increment(${i}, 'نعم')">نعم</button>
           <span id="yesCount${i}" class="counter">0</span>
+          <button class="decrement-button" onclick="decrement(${i}, 'نعم')">−</button>
+
           <button class="clickable-option" onclick="increment(${i}, 'لا')">لا</button>
           <span id="noCount${i}" class="counter">0</span>
+          <button class="decrement-button" onclick="decrement(${i}, 'لا')">−</button>
         </div>
         <div class="summary" id="summary${i}">عدد الإجابات: نعم (0) - لا (0)</div>
       `;
@@ -117,9 +147,34 @@
 
     function increment(index, answer) {
       counters[index][answer]++;
+      updateDisplay(index);
+    }
+
+    function decrement(index, answer) {
+      if (counters[index][answer] > 0) {
+        counters[index][answer]--;
+        updateDisplay(index);
+      }
+    }
+
+    function updateDisplay(index) {
       document.getElementById(`yesCount${index}`).textContent = counters[index].نعم;
       document.getElementById(`noCount${index}`).textContent = counters[index].لا;
       document.getElementById(`summary${index}`).textContent = `عدد الإجابات: نعم (${counters[index].نعم}) - لا (${counters[index].لا})`;
+    }
+
+    function saveResponses() {
+      let csvContent = "data:text/csv;charset=utf-8,سؤال,نعم,لا\n";
+      questions.forEach((q, i) => {
+        csvContent += `${q},${counters[i].نعم},${counters[i].لا}\n`;
+      });
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "survey_results.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
   </script>
 </body>
