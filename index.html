@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>نموذج تجميع إجابات</title>
+  <style>
+    body {
+      font-family: 'Tahoma', sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #002c5f;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+    }
+    .container {
+      max-width: 700px;
+      margin: 30px auto;
+      background-color: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #002c5f;
+    }
+    .question {
+      margin-bottom: 20px;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 10px;
+    }
+    .question label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    .options {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+    .counter {
+      font-size: 14px;
+      color: #555;
+      margin-right: 5px;
+    }
+    .summary {
+      font-size: 14px;
+      color: #333;
+      margin-top: 5px;
+    }
+    .clickable-option {
+      background-color: #0062cc;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .clickable-option:hover {
+      background-color: #004a99;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    نموذج الإجابة
+  </header>
+
+  <div class="container">
+    <h2>فضلاً أجب عن الأسئلة التالية:</h2>
+    <div id="questions"></div>
+  </div>
+
+  <script>
+    const questions = [
+      'هل كان الوقت كافيًا لحل الامتحان؟',
+      'هل كانت الأسئلة واضحة؟',
+      'هل الامتحان جاء من المنهج؟',
+      'هل واجهت صعوبة في الأسئلة؟',
+      'هل استفدت من المراجعات قبل الامتحان؟',
+      'هل كانت التعليمات في اللجنة واضحة؟',
+      'هل شعرت بالراحة أثناء الامتحان؟',
+      'هل الأسئلة متنوعة في المستويات؟',
+      'هل تتوقع الحصول على درجة جيدة؟',
+      'هل ترغب في المزيد من الدعم قبل الامتحانات؟'
+    ];
+
+    const counters = {};
+
+    const container = document.getElementById('questions');
+    questions.forEach((q, i) => {
+      counters[i] = { نعم: 0, لا: 0 };
+
+      const div = document.createElement('div');
+      div.className = 'question';
+      div.innerHTML = `
+        <label>${q}</label>
+        <div class="options">
+          <button class="clickable-option" onclick="increment(${i}, 'نعم')">نعم</button>
+          <span id="yesCount${i}" class="counter">0</span>
+          <button class="clickable-option" onclick="increment(${i}, 'لا')">لا</button>
+          <span id="noCount${i}" class="counter">0</span>
+        </div>
+        <div class="summary" id="summary${i}">عدد الإجابات: نعم (0) - لا (0)</div>
+      `;
+      container.appendChild(div);
+    });
+
+    function increment(index, answer) {
+      counters[index][answer]++;
+      document.getElementById(`yesCount${index}`).textContent = counters[index].نعم;
+      document.getElementById(`noCount${index}`).textContent = counters[index].لا;
+      document.getElementById(`summary${index}`).textContent = `عدد الإجابات: نعم (${counters[index].نعم}) - لا (${counters[index].لا})`;
+    }
+  </script>
+</body>
+</html>
